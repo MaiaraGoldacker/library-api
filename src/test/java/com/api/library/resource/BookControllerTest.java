@@ -3,9 +3,12 @@ package com.api.library.resource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -13,8 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
+import com.api.library.model.entity.Book;
 import com.api.library.dto.BookDto;
+import com.api.library.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class) /*Spring cria contexto- injeção de dependência para rodar teste*/
@@ -28,6 +32,9 @@ public class BookControllerTest {
 	@Autowired
 	MockMvc mvc;
 	
+	@MockBean
+	BookService service;
+	
 	@Test
 	@DisplayName("Deve criar um livro com sucesso.")
 	public void createBookTest() throws Exception{
@@ -37,6 +44,13 @@ public class BookControllerTest {
 									   .isbn("001")
 									   .build();
 		
+		Book savedBook = Book.builder().id(101L)
+									   .author("Artur")
+									   .title("As Aventuras")
+									   .isbn("001")
+									   .build();
+		
+		BDDMockito.given(service.save(Mockito.any(Book.class))).willReturn(savedBook); //para gerar o ID do objeto
 		String json = new ObjectMapper().writeValueAsString(dto); //transforma objeto em json
 		
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(BOOK_API)

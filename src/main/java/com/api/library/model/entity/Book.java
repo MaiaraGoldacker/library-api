@@ -1,18 +1,18 @@
-package com.api.library.dto;
+package com.api.library.model.entity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-
 @Data
 @Builder
 @AllArgsConstructor
-public class BookDto {
+public class Book {
 	
-	public BookDto() {
+	public Book() {
 		
 	}
-	
+
 	private Long id;
 	private String title;
 	private String author;
