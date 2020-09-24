@@ -23,6 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class) /*Spring cria contexto- injeção de dependência para rodar teste*/
 @ActiveProfiles("test") /*Roda no contexto de test - roda apenas no ambiente de test*/
+
+//configuram testes para rest api
 @WebMvcTest
 @AutoConfigureMockMvc/*Spring configura objeto para fazer as requisições do test*/
 public class BookControllerTest {
