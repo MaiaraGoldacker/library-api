@@ -1,6 +1,7 @@
 package com.api.library.resource;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -82,7 +83,7 @@ public class BookControllerTest {
 				  .content(json);
 		
 		mvc.perform(request)
-		.andExpect(MockMvcResultMatchers.status().isBadRequest())
+		.andExpect(status().isBadRequest())
 		.andExpect(jsonPath("errors", Matchers.hasSize(3))); //pois são 3 propriedades obrigatórias que não estarão preenchidas
 	}
 	
@@ -90,15 +91,20 @@ public class BookControllerTest {
 	@DisplayName("Deve lançar erro ao testar cadastrar livro com ISBN duplicado")
 	public void createBookWithDuplicatedIsbn() throws Exception {
 		BookDto dto = createNewBook();
+		String mensagemErro = "Isbn ja Cadastrado";
 		
 		String json = new ObjectMapper().writeValueAsString(dto); 
 		BDDMockito.given(service.save(Mockito.any()))
-			.willThrow(new BusinessException("Isbn já Cadastrado"));
+			.willThrow(new BusinessException(mensagemErro));
 		
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(BOOK_API)
 				  .contentType(MediaType.APPLICATION_JSON)
 				  .accept(MediaType.APPLICATION_JSON)
 				  .content(json);
+		
+		mvc.perform(request).andExpect(status().isBadRequest())
+							.andExpect(jsonPath("errors", Matchers.hasSize(1)))
+							.andExpect(jsonPath("errors[0]").value(mensagemErro));
 	}
 	
 	public BookDto createNewBook() {

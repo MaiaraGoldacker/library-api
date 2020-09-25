@@ -1,15 +1,8 @@
 package com.api.library.resource;
-
-import java.util.List;
-
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +12,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.library.dto.BookDto;
-import com.api.library.exceptions.ApiErros;
+import com.api.library.exceptions.ApiErrors;
+import com.api.library.exceptions.BusinessException;
 import com.api.library.model.entity.Book;
 import com.api.library.service.BookService;
 
@@ -48,9 +42,15 @@ public class BookController {
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiErros handleValidationExceptions(MethodArgumentNotValidException ex) {
+	public ApiErrors handleValidationExceptions(MethodArgumentNotValidException ex) {
 		BindingResult bindingResult = ex.getBindingResult(); 
-		return new ApiErros(bindingResult);
+		return new ApiErrors(bindingResult);
+	}
+	
+	@ExceptionHandler(BusinessException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ApiErrors handleBusinessException(BusinessException ex) {
+		return new ApiErrors(ex);
 	}
 	
 }
