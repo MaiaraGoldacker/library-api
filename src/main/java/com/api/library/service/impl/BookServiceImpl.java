@@ -1,5 +1,7 @@
 package com.api.library.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.api.library.exceptions.BusinessException;
@@ -24,6 +26,11 @@ public class BookServiceImpl implements BookService{
 		
 		Book savedBook = repository.save(book);
 		return savedBook;
+	}
+
+	@Override
+	public Optional<Book> getById(Long id) {
+		return null;
 	}
 
 }
