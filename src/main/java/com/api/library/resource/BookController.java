@@ -4,10 +4,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -61,7 +63,27 @@ public class BookController {
 		return service.getById(id)
 					  .map(book -> modelMapper.map(book, BookDto.class))
 					  .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)); //exception do spring boot que retorna o status http escolhido
-		
+	}	
 	
+	@DeleteMapping("{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete(@PathVariable Long id){
+		Book book = service.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		service.delete(book);
 	}
+	
+	@PutMapping("{id}")
+	public BookDto update(@PathVariable Long id, BookDto dto){
+		return service.getById(id).map(book -> {
+				book.setAuthor(dto.getAuthor());
+				book.setTitle(dto.getTitle());
+				book = service.update(book);
+
+		return modelMapper.map(book, BookDto.class);		
+				
+				
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+	
+		
+	}	
 }
