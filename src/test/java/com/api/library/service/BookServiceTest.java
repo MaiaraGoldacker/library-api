@@ -142,6 +142,46 @@ public class BookServiceTest {
 		Mockito.verify(repository, Mockito.never()).delete(book);
 	}
 
+	
+	
+	@Test
+	@DisplayName("Deve dar erro ao tentar atualizar um livro inexistente")
+	public void updateInexistentBookTest() {
+		
+		Book book = createValidBook();
+		
+		//criei o a instância de livro mas não salvei
+		Throwable exception = Assertions.catchThrowable(() ->service.delete(book));
+		assertThat(exception).isInstanceOf(IllegalArgumentException.class)
+							 .hasMessage("book id cant be null");
+		
+		org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, 
+																	() ->  service.update(book));
+		
+		Mockito.verify(repository, Mockito.never()).save(book);
+	}
+
+	@Test
+	@DisplayName("Deve atualizar um livro")
+	public void updateBookTest() {
+		Long id =1L;
+		Book updatingBook = Book.builder().id(id).build();
+		
+		//simulação
+		Book updatedBook = createValidBook();
+		updatedBook.setId(id);
+		
+		Mockito.when(repository.save(updatingBook)).thenReturn(updatedBook);
+		
+		//execução
+		Book book = service.update(updatingBook);
+		
+		assertThat(book.getId()).isEqualTo(updatedBook.getId());
+		assertThat(book.getIsbn()).isEqualTo(updatedBook.getIsbn());
+		assertThat(book.getTitle()).isEqualTo(updatedBook.getTitle());
+		assertThat(book.getAuthor()).isEqualTo(updatedBook.getAuthor());
+	}
+	
 	public Book createValidBook() {
 		return Book.builder().author("Artur")
 				   .title("As Aventuras")
