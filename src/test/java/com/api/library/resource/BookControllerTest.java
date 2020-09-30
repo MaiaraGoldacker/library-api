@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ActiveProfiles("test") /*Roda no contexto de test - roda apenas no ambiente de test*/
 
 //configuram testes para rest api
-@WebMvcTest
+@WebMvcTest(controllers = BookController.class)
 @AutoConfigureMockMvc/*Spring configura objeto para fazer as requisições do test*/
 public class BookControllerTest {
 	
