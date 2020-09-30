@@ -8,10 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.api.library.dto.BookDto;
-import com.api.library.exceptions.ApiErrors;
-import com.api.library.exceptions.BusinessException;
 import com.api.library.model.entity.Book;
 import com.api.library.service.BookService;
 
@@ -49,19 +44,6 @@ public class BookController {
 		entity = service.save(entity);
 		return modelMapper.map(entity, BookDto.class);
 		
-	}
-	
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiErrors handleValidationExceptions(MethodArgumentNotValidException ex) {
-		BindingResult bindingResult = ex.getBindingResult(); 
-		return new ApiErrors(bindingResult);
-	}
-	
-	@ExceptionHandler(BusinessException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiErrors handleBusinessException(BusinessException ex) {
-		return new ApiErrors(ex);
 	}
 	
 	@GetMapping("{id}")
