@@ -1,5 +1,7 @@
 package com.api.library.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.api.library.exceptions.BusinessException;
@@ -22,6 +24,18 @@ public class LoanServiceImpl implements LoanService{
 			throw new BusinessException("Book already loaned");
 		}
 		return repository.save(loan);
+	}
+
+	@Override
+	public Optional<Loan> getById(Long id) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	@Override
+	public Loan update(Loan loan) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

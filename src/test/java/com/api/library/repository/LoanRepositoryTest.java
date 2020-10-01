@@ -44,9 +44,4 @@ public class LoanRepositoryTest {
 		
 		assertThat(exists).isTrue();
 	}
-	
-	private Book createNewBook(String isbn) {
-		return Book.builder().id(1L).isbn(isbn).title("As aventuras").author("Fulano").build();
-	}
-
 }

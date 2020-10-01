@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.api.library.model.entity.Book;
 import com.api.library.model.entity.Loan;
 
-//@Repository
+@Repository
 public interface LoanRepository extends JpaRepository<Loan, Long>{
 
 	@Query("select case when (count(l.id) > 0) then true else false end "
