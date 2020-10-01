@@ -1,6 +1,8 @@
 package com.api.library.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 
@@ -13,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.api.library.exceptions.BusinessException;
 import com.api.library.model.entity.Book;
 import com.api.library.model.entity.Loan;
 import com.api.library.model.repository.LoanRepository;
@@ -49,8 +52,8 @@ public class LoanServiceTest {
 				  					   .customer(customer)
 				  					   .loanDate(LocalDate.now())
 				  					   .build();
-		
-		Mockito.when(loanRepository.save(savingLoan)).thenReturn(savedLoan);
+		when(loanRepository.existsByBookAndNotReturned(book)).thenReturn(false); 
+		when(loanRepository.save(savingLoan)).thenReturn(savedLoan);
 		
 		Loan loan = loanService.save(savingLoan);
 		
@@ -58,6 +61,23 @@ public class LoanServiceTest {
 		assertThat(loan.getCustomer()).isEqualTo(savedLoan.getCustomer());
 		assertThat(loan.getLoanDate()).isEqualTo(savedLoan.getLoanDate());
 		assertThat(loan.getBook()).isEqualTo(savedLoan.getBook());
+	}
+	
+	@Test
+	@DisplayName("Deve lançar erro de negócio ao salvar um empréstimo com livro já emprestado")
+	public void loanedBookSaveTest() {
+		Book book = Book.builder().id(1L).build();
+		String customer = "Fulano";
+		
+		Loan savingLoan = Loan.builder().book(book)
+								  .customer(customer)
+								  .loanDate(LocalDate.now())
+								  .build();
+		
+		when(loanRepository.existsByBookAndNotReturned(book)).thenReturn(true); //sempre vai retornar verdadeiro
+		
+		Throwable exception = catchThrowable(() -> loanService.save(savingLoan));
+		assertThat(exception).isInstanceOf(BusinessException.class).hasMessage("Book already loaned");
 	}
 
 }
