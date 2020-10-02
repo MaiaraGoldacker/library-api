@@ -13,7 +13,11 @@ public class LoanDto {
 		
 	}
 	
+	private Long id;
+	
 	private String isbn;
 	
 	private String customer;
+	
+	private BookDto book;
 }

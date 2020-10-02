@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.hamcrest.Matchers;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -26,12 +30,14 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.api.library.dto.LoanDto;
+import com.api.library.dto.LoanFilterDto;
 import com.api.library.dto.ReturnedLoanDto;
 import com.api.library.exceptions.BusinessException;
 import com.api.library.model.entity.Book;
 import com.api.library.model.entity.Loan;
 import com.api.library.service.BookService;
 import com.api.library.service.LoanService;
+import com.api.library.service.LoanServiceTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
@@ -154,5 +160,71 @@ public class LoanControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json)).andExpect(status().isNotFound());
 		
+	}
+	
+	@Test
+	@DisplayName("Deve filtrar empréstimos")
+	public void findLoansTest() throws Exception{
+		
+		
+		 //cenário
+        Long id = 1l;
+        Loan loan = LoanServiceTest.createLoan();
+        loan.setId(id);
+        Book book = Book.builder().id(1l).isbn("321").build();
+        loan.setBook(book);
+
+        BDDMockito.given( loanService.find( Mockito.any(LoanFilterDto.class), Mockito.any(Pageable.class)) )
+                .willReturn( new PageImpl<Loan>( Arrays.asList(loan), PageRequest.of(0,10), 1 ) );
+
+        String queryString = String.format("?isbn=%s&customer=%s&page=0&size=10",
+                book.getIsbn(), loan.getCustomer());
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(LOAN_API.concat(queryString))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc
+                .perform( request )
+                .andExpect( status().isOk() )
+                .andExpect( jsonPath("content", Matchers.hasSize(1)))
+                .andExpect( jsonPath("totalElements").value(1) )
+                .andExpect( jsonPath("pageable.pageSize").value(10) )
+                .andExpect( jsonPath("pageable.pageNumber").value(0))
+        ;
+    }
+
+		/*Long id = 1L;
+		Loan loan = Loan.builder().customer("Fulano").loanDate(LocalDate.now()).build();
+		loan.setId(id);
+		Book book = Book.builder().id(1L).isbn("321").build();
+		loan.setBook(book);
+		
+		BDDMockito.given(loanService.find(Mockito.any(LoanFilterDto.class), Mockito.any(Pageable.class)))
+		.willReturn(new PageImpl<Loan>(Arrays.asList(loan), PageRequest.of(0, 10), 1));
+		
+		String queryString = String.format("?isbn=%s&customer=%s&page=0&size=10", 
+				book.getIsbn(), loan.getCustomer());
+		
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+				.get(LOAN_API.concat(queryString))
+				.accept(MediaType.APPLICATION_JSON);
+		
+		mvc.perform(request).andExpect(status().isOk())
+							//.andExpect(jsonPath("content", Matchers.hasSize(1)))
+							//.andExpect(jsonPath("totalElements").value(1))
+							//.andExpect(jsonPath("pageable.pageSize").value(10))
+							//.andExpect(jsonPath("pageable.pageNumber").value(0))
+							;*/
+	//}
+	
+	public Loan createLoan() {
+		Book book = Book.builder().id(1L).build();
+		String customer = "Fulano";
+		
+		return Loan.builder().book(book)
+							 .customer(customer)
+							 .loanDate(LocalDate.now())
+							 .build();
 	}
 }

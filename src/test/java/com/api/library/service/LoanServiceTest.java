@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -121,7 +120,7 @@ public class LoanServiceTest {
 		
 	}
 	
-	public Loan createLoan() {
+	public static Loan createLoan() {
 		Book book = Book.builder().id(1L).build();
 		String customer = "Fulano";
 		
