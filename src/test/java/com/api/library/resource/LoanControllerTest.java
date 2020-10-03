@@ -166,7 +166,6 @@ public class LoanControllerTest {
 	@DisplayName("Deve filtrar empréstimos")
 	public void findLoansTest() throws Exception{
 		
-		
 		 //cenário
         Long id = 1l;
         Loan loan = LoanServiceTest.createLoan();
@@ -194,30 +193,6 @@ public class LoanControllerTest {
         ;
     }
 
-		/*Long id = 1L;
-		Loan loan = Loan.builder().customer("Fulano").loanDate(LocalDate.now()).build();
-		loan.setId(id);
-		Book book = Book.builder().id(1L).isbn("321").build();
-		loan.setBook(book);
-		
-		BDDMockito.given(loanService.find(Mockito.any(LoanFilterDto.class), Mockito.any(Pageable.class)))
-		.willReturn(new PageImpl<Loan>(Arrays.asList(loan), PageRequest.of(0, 10), 1));
-		
-		String queryString = String.format("?isbn=%s&customer=%s&page=0&size=10", 
-				book.getIsbn(), loan.getCustomer());
-		
-		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-				.get(LOAN_API.concat(queryString))
-				.accept(MediaType.APPLICATION_JSON);
-		
-		mvc.perform(request).andExpect(status().isOk())
-							//.andExpect(jsonPath("content", Matchers.hasSize(1)))
-							//.andExpect(jsonPath("totalElements").value(1))
-							//.andExpect(jsonPath("pageable.pageSize").value(10))
-							//.andExpect(jsonPath("pageable.pageNumber").value(0))
-							;*/
-	//}
-	
 	public Loan createLoan() {
 		Book book = Book.builder().id(1L).build();
 		String customer = "Fulano";
