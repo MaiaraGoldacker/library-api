@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.api.library.dto.LoanFilterDto;
 import com.api.library.exceptions.BusinessException;
+import com.api.library.model.entity.Book;
 import com.api.library.model.entity.Loan;
 import com.api.library.model.repository.LoanRepository;
 import com.api.library.service.LoanService;
@@ -40,6 +41,11 @@ public class LoanServiceImpl implements LoanService{
 	@Override
 	public Page<Loan> find(LoanFilterDto loan, Pageable pageRequest) {
 		return repository.findByBookIsbnOrCustomer(loan.getIsbn(), loan.getCustomer(), pageRequest);
+	}
+
+	@Override
+	public Page<Loan> getLoansByBook(Book book, Pageable pageable) {
+		return repository.findByBook(book, pageable);
 	}
 
 }
