@@ -26,11 +26,14 @@ import com.api.library.model.entity.Loan;
 import com.api.library.service.BookService;
 import com.api.library.service.LoanService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor //cria um construtor com todas as dependências que estiverem criadas com final
+@Api("Book API")
 public class BookController {
 
 	private final BookService service;
@@ -41,6 +44,7 @@ public class BookController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation("Create a book")
 	public BookDto create(@RequestBody @Valid BookDto dto) {
 		
 		Book entity = modelMapper.map(dto, Book.class);
@@ -50,6 +54,7 @@ public class BookController {
 	}
 	
 	@GetMapping("{id}")
+	@ApiOperation("Obtains a book detail by id")
 	public BookDto get(@PathVariable Long id){
 		return service.getById(id)
 					  .map(book -> modelMapper.map(book, BookDto.class))
@@ -58,12 +63,14 @@ public class BookController {
 	
 	@DeleteMapping("{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@ApiOperation("Delete a book by id")
 	public void delete(@PathVariable Long id){
 		Book book = service.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 		service.delete(book);
 	}
 	
 	@PutMapping("{id}")
+	@ApiOperation("Update a book")
 	public BookDto update(@PathVariable Long id, BookDto dto){
 		return service.getById(id).map(book -> {
 				book.setAuthor(dto.getAuthor());
@@ -77,6 +84,7 @@ public class BookController {
 	}
 	
 	@GetMapping
+	@ApiOperation("Find books")
 	public Page<BookDto> find (BookDto dto, Pageable pageRequest){
 		Book filter  = modelMapper.map(dto, Book.class);
 		Page<Book> result = service.find(filter, pageRequest);
