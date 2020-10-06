@@ -29,11 +29,13 @@ import com.api.library.service.LoanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor //cria um construtor com todas as dependências que estiverem criadas com final
 @Api("Book API")
+@Slf4j //Classe recebe log de compilação
 public class BookController {
 
 	private final BookService service;
@@ -46,6 +48,8 @@ public class BookController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation("Create a book")
 	public BookDto create(@RequestBody @Valid BookDto dto) {
+		
+		log.info("Create a book for isbn {}", dto.getIsbn());  //@Slf4j
 		
 		Book entity = modelMapper.map(dto, Book.class);
 		entity = service.save(entity);
