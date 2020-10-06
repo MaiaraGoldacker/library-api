@@ -29,6 +29,8 @@ import com.api.library.model.entity.Book;
 import com.api.library.dto.BookDto;
 import com.api.library.exceptions.BusinessException;
 import com.api.library.service.BookService;
+import com.api.library.service.EmailService;
+import com.api.library.service.LoanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class) /*Spring cria contexto- injeção de dependência para rodar teste*/
@@ -46,6 +48,13 @@ public class BookControllerTest {
 	
 	@MockBean
 	BookService service;
+	
+	@MockBean
+	LoanService loanService;
+	
+	@MockBean
+	EmailService emailService;
+	
 	
 	@Test
 	@DisplayName("Deve criar um livro com sucesso.")
