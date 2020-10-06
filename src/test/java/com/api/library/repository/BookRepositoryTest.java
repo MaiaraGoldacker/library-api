@@ -27,7 +27,7 @@ public class BookRepositoryTest {
 	
 	@Autowired
 	BookRepository bookRepository;
-
+	
 	@Test
 	@DisplayName("Deve retornar verdadeiro quando existir um livro na base com o isbn informado")
 	public void returnTrueWhenIsbnExists() {

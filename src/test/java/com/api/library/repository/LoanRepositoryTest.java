@@ -31,6 +31,8 @@ public class LoanRepositoryTest {
 	@Autowired
 	LoanRepository repository;
 	
+	
+	
 	@Test
 	@DisplayName("Deve verificar se existe empréstimo não devolvido para o livro")
 	public void existsByBookAndNotReturned(){
